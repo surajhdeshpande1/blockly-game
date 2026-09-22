@@ -45,6 +45,7 @@ export default function Game({ user }: GameProps) {
     setIsPlaying(false);
     isPlayingRef.current = false;
     setXml(''); // Clear workspace for new level
+    setBlocksUsed(0);
     forceRender(r => r + 1);
   }, [levelIndex, levelData]);
 
@@ -281,7 +282,9 @@ export default function Game({ user }: GameProps) {
                     className={styles.nextBtn}
                     onClick={() => {
                       setGameResult(null);
-                      setXml(''); // Resets the workspace for this level only
+                      setXml(''); // Resets the React state
+                      setBlocksUsed(0);
+                      Blockly.getMainWorkspace().clear(); // Forcefully wipes the UI blocks
                       playerPos.current = { ...levelData.startPos };
                       playerDir.current = levelData.startDir;
                       forceRender(r => r + 1);

@@ -6,6 +6,7 @@ import * as Blockly from 'blockly/core';
 import { javascriptGenerator } from 'blockly/javascript';
 import { defineMazeBlocks } from '../game/blocks';
 import { levels, LevelData, Direction, MazeCell } from '../game/levels';
+import { supabase } from '../lib/supabase';
 import styles from './Game.module.css';
 
 import { UserData } from './Onboarding';
@@ -237,12 +238,13 @@ export default function Game({ user }: GameProps) {
             <button 
               className={styles.runBtn} 
               onClick={handleRunProgram}
-              disabled={isPlaying}
+              disabled={isPlaying || blocksUsed !== levelData.maxBlocks}
+              title={blocksUsed !== levelData.maxBlocks ? `You must use exactly ${levelData.maxBlocks} blocks to run!` : ""}
             >
               ▶ Run Program
             </button>
             <div className={styles.blocksCount}>
-              You have used {blocksUsed} out of {levelData.maxBlocks} blocks.
+              You have used <span className={blocksUsed === levelData.maxBlocks ? styles.highlight : ''}>{blocksUsed}</span> out of exactly {levelData.maxBlocks} required blocks.
             </div>
           </div>
           
@@ -253,9 +255,18 @@ export default function Game({ user }: GameProps) {
                   <h3>Level Completed!</h3>
                   {levelIndex < levels.length - 1 && (
                     <button 
-                      onClick={() => {
-                        setLevelIndex(levelIndex + 1);
+                      onClick={async () => {
+                        const nextLevel = levelIndex + 1;
+                        setLevelIndex(nextLevel);
                         setXml('');
+                        
+                        // Update Supabase to track progression
+                        if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://your-project-id.supabase.co') {
+                          await supabase
+                            .from('players')
+                            .update({ levels_cleared: nextLevel })
+                            .eq('usn', user.usn);
+                        }
                       }} 
                       className={styles.nextBtn}
                     >
@@ -264,7 +275,21 @@ export default function Game({ user }: GameProps) {
                   )}
                 </>
               ) : (
-                <h3>You didn't reach the goal. Try again!</h3>
+                <>
+                  <h3>You didn't reach the goal.</h3>
+                  <button 
+                    className={styles.nextBtn}
+                    onClick={() => {
+                      setGameResult(null);
+                      setXml(''); // Resets the workspace for this level only
+                      playerPos.current = { ...levelData.startPos };
+                      playerDir.current = levelData.startDir;
+                      forceRender(r => r + 1);
+                    }}
+                  >
+                    Try Again
+                  </button>
+                </>
               )}
             </div>
           )}

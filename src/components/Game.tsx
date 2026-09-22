@@ -103,6 +103,7 @@ export default function Game({ user }: GameProps) {
       await sleep(200);
     },
     notDone: async () => {
+      await sleep(20); // Prevents the browser from freezing if the player builds an empty infinite loop
       const { x, y } = playerPos.current;
       return levelData.grid[y][x] !== 3; // 3 is Goal
     },

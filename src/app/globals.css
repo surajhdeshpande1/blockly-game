@@ -1,26 +1,115 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-primary: #050505; /* Pitch black */
+  --bg-secondary: #0a0f0a; /* Very dark green-tinted black */
+  --text-primary: #00FF41; /* Classic Matrix Green */
+  --text-secondary: #008F11; /* Darker Matrix Green */
+  
+  --accent-yellow: #FFFF00; /* Bright yellow for warnings/highlights */
+  --accent-pink: #FF00FF; /* Hacker magenta */
+  --accent-blue: #00FFFF; /* Cyan */
+  --accent-green: #00FF41; 
+  --accent-red: #FF0000;
+  
+  --border-thick: 2px solid var(--text-primary);
+  --border-thin: 1px solid var(--text-secondary);
+  
+  --shadow-brutal: 0 0 10px rgba(0, 255, 65, 0.5);
+  --shadow-brutal-hover: 0 0 20px rgba(0, 255, 65, 0.8), inset 0 0 10px rgba(0, 255, 65, 0.2);
+  --shadow-brutal-large: 0 0 15px rgba(0, 255, 65, 0.4);
+  
+  --font-family: 'Fira Code', monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-primary);
+  /* Subtle scanline effect */
+  background-image: linear-gradient(
+    rgba(0, 255, 65, 0.03) 50%,
+    rgba(0, 0, 0, 0.25) 50%
+  );
+  background-size: 100% 4px;
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  text-transform: uppercase;
+  text-shadow: 0 0 5px rgba(0, 255, 65, 0.7);
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: var(--border-thick);
+  background: rgba(0, 25, 0, 0.8);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-brutal);
+  transition: all 0.2s ease;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+button:hover {
+  background: rgba(0, 255, 65, 0.1);
+  box-shadow: var(--shadow-brutal-hover);
+  text-shadow: 0 0 8px rgba(0, 255, 65, 1);
+}
+
+button:active {
+  background: var(--text-primary);
+  color: #000;
+}
+
+input {
+  width: 100%;
+  font-family: inherit;
+  border: var(--border-thin);
+  border-bottom: var(--border-thick);
+  background: rgba(0, 15, 0, 0.9);
+  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+input:focus {
+  border: var(--border-thick);
+  box-shadow: var(--shadow-brutal);
+  background: rgba(0, 30, 0, 0.9);
+}
+
+/* Fix browser autofill styling */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px rgba(0, 15, 0, 1) inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--text-secondary);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-primary);
 }

@@ -236,14 +236,29 @@ export default function Game({ user }: GameProps) {
             {renderGrid()}
           </div>
           <div className={styles.controls}>
-            <button 
-              className={styles.runBtn} 
-              onClick={handleRunProgram}
-              disabled={isPlaying || blocksUsed !== levelData.maxBlocks}
-              title={blocksUsed !== levelData.maxBlocks ? `You must use exactly ${levelData.maxBlocks} blocks to run!` : ""}
-            >
-              ▶ Run Program
-            </button>
+            {isPlaying ? (
+              <button 
+                className={`${styles.runBtn} ${styles.stopBtn}`}
+                style={{ background: 'rgba(255, 0, 0, 0.2)', borderColor: 'red', color: 'red', boxShadow: '0 0 10px rgba(255, 0, 0, 0.5)' }}
+                onClick={() => {
+                  isPlayingRef.current = false;
+                  setIsPlaying(false);
+                  setGameResult('lost');
+                }}
+              >
+                ⏹ Stop Program
+              </button>
+            ) : (
+              <button 
+                className={styles.runBtn} 
+                onClick={handleRunProgram}
+                disabled={blocksUsed !== levelData.maxBlocks}
+                title={blocksUsed !== levelData.maxBlocks ? `You must use exactly ${levelData.maxBlocks} blocks to run!` : ""}
+              >
+                ▶ Run Program
+              </button>
+            )}
+            
             <div className={styles.blocksCount}>
               You have used <span className={blocksUsed === levelData.maxBlocks ? styles.highlight : ''}>{blocksUsed}</span> out of exactly {levelData.maxBlocks} required blocks.
             </div>
